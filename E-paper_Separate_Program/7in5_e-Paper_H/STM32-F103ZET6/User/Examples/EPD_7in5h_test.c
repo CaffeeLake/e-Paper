@@ -1,11 +1,11 @@
 /*****************************************************************************
 * | File      	:   EPD_7in5h_test.c
 * | Author      :   Waveshare team
-* | Function    :   7.5inch e-paper (G) test demo
+* | Function    :   7.5inch e-paper (G) V2 test demo
 * | Info        :
 *----------------
 * |	This version:   V1.0
-* | Date        :   2024-08-07
+* | Date        :   2026-07-13
 * | Info        :
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,10 +33,7 @@
 int EPD_test(void)
 {
     printf("EPD_7IN5H_test Demo\r\n");
-    if(DEV_Module_Init()!=0){
-        return -1;
-    }
-    DEV_Delay_ms(500);
+    DEV_Module_Init();
 
     printf("e-Paper Init and Clear...\r\n");
     EPD_7IN5H_Init();
@@ -46,25 +43,23 @@ int EPD_test(void)
     //Create a new image cache
     UBYTE *BlackImage;
     UDOUBLE Imagesize = ((EPD_7IN5H_WIDTH % 4 == 0)? (EPD_7IN5H_WIDTH / 4 ): (EPD_7IN5H_WIDTH / 4 + 1)) * EPD_7IN5H_HEIGHT;
-    if((BlackImage = (UBYTE *)malloc(Imagesize/2)) == NULL) {
+    if((BlackImage = (UBYTE *)malloc(Imagesize/8)) == NULL) {
         printf("Failed to apply for black memory...\r\n");
         return -1;
     }
     printf("Paint_NewImage\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
+    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH/2, EPD_7IN5H_HEIGHT/4, 0, EPD_7IN5H_WHITE);
     Paint_SetScale(4);
 
 #if 1   // show bmp
-    printf("show BMP-----------------\r\n");
     EPD_7IN5H_Display(Image4color);
-    DEV_Delay_ms(2000);
+    DEV_Delay_ms(1500);
 #endif
+
 
 #if 1   // Drawing on the image
     //1.Select Image
     printf("SelectImage:BlackImage\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH/2, EPD_7IN5H_HEIGHT/2, 0, EPD_7IN5H_WHITE);
-    Paint_SetScale(4);
     Paint_SelectImage(BlackImage);
     Paint_Clear(EPD_7IN5H_WHITE);
 
@@ -87,7 +82,7 @@ int EPD_test(void)
     Paint_DrawNum(10, 35, 123456, &Font12, EPD_7IN5H_RED, EPD_7IN5H_WHITE);
 
     printf("EPD_Display\r\n");
-    EPD_7IN5H_DisplayPart(BlackImage, 0, 0, EPD_7IN5H_WIDTH/2, EPD_7IN5H_HEIGHT/2);
+    EPD_7IN5H_DisplayPart(BlackImage, 0, 0, EPD_7IN5H_WIDTH/2, EPD_7IN5H_HEIGHT/4);
     DEV_Delay_ms(3000);
 #endif
 

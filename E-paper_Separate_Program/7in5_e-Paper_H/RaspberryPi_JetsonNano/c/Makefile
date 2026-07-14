@@ -12,8 +12,14 @@ ifeq ($(EPD), reserved)
 	OBJ_C_EPD = ${DIR_EPD}/reserved.c
 	OBJ_C_Examples = ${DIR_Examples}/reserved_test.c
 	OBJ_C = $(wildcard ${OBJ_C_EPD} ${DIR_GUI}/*.c ${OBJ_C_Examples} ${DIR_Examples}/main.c ${DIR_Examples}/ImageData2.c ${DIR_Examples}/ImageData.c ${DIR_FONTS}/*.c )
+else ifeq ($(EPD), epd7in5h)
+	OBJ_C_EPD = ${DIR_EPD}/EPD_7in5h.c
+	OBJ_C_Examples = ${DIR_Examples}/EPD_7in5h_test.c
+	OBJ_C = $(wildcard ${OBJ_C_EPD} ${DIR_GUI}/*.c ${OBJ_C_Examples} ${DIR_Examples}/main.c ${DIR_Examples}/ImageData2.c ${DIR_Examples}/ImageData.c ${DIR_FONTS}/*.c )
 else 
-	OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_GUI}/*.c ${DIR_Examples}/*.c ${DIR_FONTS}/*.c )
+	OBJ_C_EPD = ${DIR_EPD}/EPD_7in5h_V2.c
+	OBJ_C_Examples = ${DIR_Examples}/EPD_7in5h_V2_test.c
+	OBJ_C = $(wildcard ${OBJ_C_EPD} ${DIR_GUI}/*.c ${OBJ_C_Examples} ${DIR_Examples}/main.c ${DIR_Examples}/ImageData2.c ${DIR_Examples}/ImageData.c ${DIR_FONTS}/*.c )
 endif
 
 OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))

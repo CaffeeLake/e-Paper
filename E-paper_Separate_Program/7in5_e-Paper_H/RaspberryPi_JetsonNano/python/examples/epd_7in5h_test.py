@@ -16,7 +16,7 @@ import traceback
 logging.basicConfig(level=logging.DEBUG)
 
 try:
-    logging.info("epd2in13g Demo")
+    logging.info("epd7in5h Demo")
 
     epd = epd7in5h.EPD()   
     logging.info("init and Clear")
@@ -58,6 +58,9 @@ try:
     
     logging.info("Goto Sleep...")
     epd.sleep()
+
+    logging.info("close 5V, Module enters 0 power consumption ......")
+    epd.EPD_END()
         
 except IOError as e:
     logging.info(e)

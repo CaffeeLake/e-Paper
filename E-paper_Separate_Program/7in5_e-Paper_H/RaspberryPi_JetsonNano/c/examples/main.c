@@ -26,7 +26,11 @@ int main(void)
 //     printf("Don't know which program you need to run? Refer to the user manual (Wiki) and main.c \r\n");
 // #endif
 
+#if epd7in5h
     EPD_7in5h_test(); 
+#else
+    EPD_7in5h_V2_test(); 
+#endif
     
     return 0;
 }

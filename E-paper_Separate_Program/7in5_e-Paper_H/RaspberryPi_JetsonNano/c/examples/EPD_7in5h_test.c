@@ -1,11 +1,11 @@
 /*****************************************************************************
 * | File      	:   EPD_7in5h_test.c
 * | Author      :   Waveshare team
-* | Function    :   7.5inch e-paper (G) test demo
+* | Function    :   7.5inch e-paper (G) V2 test demo
 * | Info        :
 *----------------
 * |	This version:   V1.0
-* | Date        :   2024-08-07
+* | Date        :   2026-07-13
 * | Info        :
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,10 +33,7 @@
 int EPD_7in5h_test(void)
 {
     printf("EPD_7IN5H_test Demo\r\n");
-    if(DEV_Module_Init()!=0){
-        return -1;
-    }
-    DEV_Delay_ms(500);
+    DEV_Module_Init();
 
     printf("e-Paper Init and Clear...\r\n");
     EPD_7IN5H_Init();
@@ -44,38 +41,37 @@ int EPD_7in5h_test(void)
     DEV_Delay_ms(2000);
 
     //Create a new image cache
-    UBYTE *BlackImage;
-    UDOUBLE Imagesize = ((EPD_7IN5H_WIDTH % 4 == 0)? (EPD_7IN5H_WIDTH / 4 ): (EPD_7IN5H_WIDTH / 4 + 1)) * EPD_7IN5H_HEIGHT;
-    if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
-        printf("Failed to apply for black memory...\r\n");
+    UBYTE *Image;
+    UWORD Imagesize = ((EPD_7IN5H_WIDTH % 4 == 0)? (EPD_7IN5H_WIDTH / 4 ): (EPD_7IN5H_WIDTH / 4 + 1)) * EPD_7IN5H_HEIGHT;
+    if((Image = (UBYTE *)malloc(Imagesize)) == NULL) {
+        printf("Failed to apply for memory...\r\n");
         return -1;
     }
     printf("Paint_NewImage\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
+    Paint_NewImage(Image, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
     Paint_SetScale(4);
 
 #if 0   // show bmp
     printf("show BMP-----------------\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
+    Paint_NewImage(Image, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
     Paint_SetScale(4);
-    Paint_SelectImage(BlackImage);
+    Paint_SelectImage(Image);
     GUI_ReadBmp_RGB_4Color("./pic/7in5h.bmp", 0, 0);
-    EPD_7IN5H_Display(BlackImage);
+    EPD_7IN5H_Display(Image);
     DEV_Delay_ms(2000);
 #endif
 
+
 #if 1   // show bmp
-    printf("show BMP-----------------\r\n");
     EPD_7IN5H_Display(Image4color);
-    DEV_Delay_ms(2000);
+    DEV_Delay_ms(1500);
 #endif
+
 
 #if 1   // Drawing on the image
     //1.Select Image
     printf("SelectImage:BlackImage\r\n");
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
-    Paint_SetScale(4);
-    Paint_SelectImage(BlackImage);
+    Paint_SelectImage(Image);
     Paint_Clear(EPD_7IN5H_WHITE);
 
     // 2.Drawing on the image
@@ -97,54 +93,7 @@ int EPD_7in5h_test(void)
     Paint_DrawNum(10, 35, 123456, &Font12, EPD_7IN5H_RED, EPD_7IN5H_WHITE);
 
     printf("EPD_Display\r\n");
-    EPD_7IN5H_Display(BlackImage);
-    DEV_Delay_ms(3000);
-#endif
-
-    Paint_NewImage(BlackImage, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT, 0, EPD_7IN5H_WHITE);
-    Paint_SetScale(4);
-
-#if 0   // Drawing on the image
-    //1.Select Image
-    printf("SelectImage:BlackImage\r\n");
-    Paint_SelectImage(BlackImage);
-    Paint_Clear(EPD_7IN5H_WHITE);
-
-    // 2.Drawing on the image
-    printf("Drawing:BlackImage\r\n");
-    Paint_DrawRectangle(1, 1, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT/4, EPD_7IN5H_RED, DOT_PIXEL_1X1, DRAW_FILL_FULL);
-    Paint_DrawRectangle(1, EPD_7IN5H_HEIGHT/4, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT/2, EPD_7IN5H_YELLOW, DOT_PIXEL_1X1, DRAW_FILL_FULL);
-    Paint_DrawRectangle(1, EPD_7IN5H_HEIGHT/2, EPD_7IN5H_WIDTH, EPD_7IN5H_HEIGHT/4*3, EPD_7IN5H_BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
-
-    printf("EPD_Display\r\n");
-    EPD_7IN5H_Display(BlackImage);
-    DEV_Delay_ms(3000);
-#endif
-
-#if 0   // Drawing on the image
-    //1.Select Image
-    printf("SelectImage:BlackImage\r\n");
-    Paint_SelectImage(BlackImage);
-    Paint_Clear(EPD_7IN5H_WHITE);
-
-    int hNumber, hWidth, vNumber, vWidth;
-    hNumber = 20;
-	hWidth = EPD_7IN5H_HEIGHT/hNumber;
-    vNumber = 8;
-	vWidth = EPD_7IN5H_WIDTH/vNumber;
-
-    // 2.Drawing on the image
-    printf("Drawing:BlackImage\r\n");
-	for(int i=0; i<hNumber; i++) {  // horizontal
-		Paint_DrawRectangle(1, 1+i*hWidth, EPD_7IN5H_WIDTH, hWidth*(1+i), EPD_7IN5H_BLACK + (i % 2), DOT_PIXEL_1X1, DRAW_FILL_FULL);
-	}
-	for(int i=0; i<vNumber; i++) {  // vertical
-        if(i%2) {
-            Paint_DrawRectangle(1+i*vWidth, 1, vWidth*(i+1), EPD_7IN5H_HEIGHT, EPD_7IN5H_YELLOW + (i/2%2), DOT_PIXEL_1X1, DRAW_FILL_FULL);
-        }
-	}
-    printf("EPD_Display\r\n");
-    EPD_7IN5H_Display(BlackImage);
+    EPD_7IN5H_Display(Image);
     DEV_Delay_ms(3000);
 #endif
 
@@ -153,8 +102,6 @@ int EPD_7in5h_test(void)
 
     printf("Goto Sleep...\r\n");
     EPD_7IN5H_Sleep();
-    free(BlackImage);
-    BlackImage = NULL;
     DEV_Delay_ms(2000);//important, at least 2s
     // close 5V
     printf("close 5V, Module enters 0 power consumption ...\r\n");
